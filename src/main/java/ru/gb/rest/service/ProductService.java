@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import ru.gb.rest.dao.CartRepository;
 import ru.gb.rest.dao.ProductDao;
 import ru.gb.rest.dto.ProductDto;
 import ru.gb.rest.entity.Product;
@@ -22,6 +23,8 @@ import java.util.Optional;
 public class ProductService {
 
     private final ProductDao productDao;
+    private final CartRepository cartRepository;
+
 
     public ProductDto save(ProductDto productDto) {
         Product savingProduct;
@@ -97,5 +100,28 @@ public class ProductService {
         System.out.println(productDao.count());
         // какая-то логика
         return productDao.count();
+    }
+
+    public List<Product> showCart() {
+        return cartRepository.showCart();
+    }
+
+    public void addProductToCart(Long id) {
+        if (id != null) {
+            Product productFromDb = productDao.findById(id).orElse(null);
+            //if (productFromDb == null) throw new AssertionError();
+            cartRepository.addProduct(productFromDb);
+        }
+    }
+
+    public void deleteFromCartById(Long id) {
+        List<Product> list = cartRepository.showCart();
+        for (Product product : list) {
+            if (product.getId().equals(id)) {
+                cartRepository.deleteProduct(product);
+                break;
+            }
+        }
+
     }
 }

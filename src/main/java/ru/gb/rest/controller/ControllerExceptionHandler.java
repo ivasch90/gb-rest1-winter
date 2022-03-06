@@ -13,6 +13,7 @@ import java.util.List;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> validationErrorHandler(MethodArgumentNotValidException e) {
         List<String> errors = new ArrayList<>();
